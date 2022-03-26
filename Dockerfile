@@ -29,11 +29,11 @@ RUN apk add --no-cache \
     vim
     
 RUN adduser --system app --home /app
-USER app
-WORKDIR /app
-#RUN git clone https://github.com/timeoff-management/application.git timeoff-management
-COPY . .
 WORKDIR /app/timeoff-management
+COPY . .
+RUN chown -R app /app/timeoff-management/
+
+USER app
 
 RUN npm install
 
