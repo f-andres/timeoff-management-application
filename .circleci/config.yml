@@ -5,12 +5,12 @@ orbs:
 jobs:
   build:
     docker:
-      - image: 'circleci/python:3.7.1'
-    working_directory: /home/circleci/project/risk_pd_model
+      - image: docker:17.05.0-ce-git
+    working_directory: /app
     steps:
       - checkout
       - run:
-          name: check_files
+          name: Install dependencies
           command: |
             ls -la
             pwd
@@ -19,7 +19,7 @@ jobs:
 
       #  - sonarcloud/scan
       - persist_to_workspace:
-          root: /home/circleci/project
+          root: /app
           paths:
             - .
   testing:
