@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   sonarcloud: sonarsource/sonarcloud@1.0.1
+  aws-ecr: circleci/aws-ecr@8.0.0
 jobs:
   build:
     docker:
@@ -11,18 +12,17 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
-          name: Install dependencies
+          name: build image
           command: |
             ls -la
             pwd
             docker build --tag timeoff:latest .
             docker images
 
-      #  - sonarcloud/scan
-      - persist_to_workspace:
-          root: /app
-          paths:
-            - .
+      - aws-ecr/build-and-push-image:
+          repo: "${AWS_RESOURCE_NAME_PREFIX}"
+          tag: "${CIRCLE_SHA1}"
+
   testing:
     docker:
       - image: 'circleci/python:3.7.1'
