@@ -1,68 +1,12 @@
 version: 2.1
-
 orbs:
-  sonarcloud: sonarsource/sonarcloud@1.0.1
-  aws-ecr: circleci/aws-ecr@8.0.0
-jobs:
-  build:
-    docker:
-      - image: docker:17.05.0-ce-git
-    working_directory: /app
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: build image
-          command: |
-            ls -la
-            pwd
-            docker build --tag timeoff:latest .
-            docker images
-
-      - aws-ecr/build-and-push-image:
-          repo: "${AWS_RESOURCE_NAME_PREFIX}"
-          tag: "${CIRCLE_SHA1}"
-
-  testing:
-    docker:
-      - image: 'circleci/python:3.7.1'
-    steps:
-
-      - attach_workspace:
-          at: /home/circleci/project
-      - run:
-          name: check_files
-          command: |
-            ls -la
-            ls -la
-            pwd
-  Prod:
-    docker:
-      - image: 'circleci/python:3.7.1'
-    steps:
-
-      - attach_workspace:
-          at: /home/circleci/project
-      - run:
-          name: check_files_2
-          command: |
-            ls -la
-            cd risk_pd_model
-            ls -la
-            pwd
+  aws-ecr: circleci/aws-ecr@0.0.2
+  aws-ecs: circleci/aws-ecs@0.0.10
 workflows:
-  main:
+  build-and-deploy:
     jobs:
-      - build
-
-      - testing:
-          requires:
-            - build
-
-      - Prod:
-          requires:
-            - testing
-          filters:
-            branches:
-              only:
-                - master
+      - aws-ecr/build_and_push_image:
+          account-url: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+          repo: "${AWS_RESOURCE_NAME_PREFIX}"
+          region: ${AWS_DEFAULT_REGION}
+          tag: "${CIRCLE_SHA1}"
