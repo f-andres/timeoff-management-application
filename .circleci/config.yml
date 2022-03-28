@@ -34,6 +34,6 @@ workflows:
       - aws-ecs/deploy-service-update:
           cluster-name: 'cb-cluster'
           container-image-name-updates: 'container=${MY_APP_PREFIX}-service,tag=${CIRCLE_SHA1}'
-          family: '${MY_APP_PREFIX}-service'
+          family: "cb-app"
           requires:
             - aws-ecr/build-and-push-image
