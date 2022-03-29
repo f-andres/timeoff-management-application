@@ -31,6 +31,7 @@ workflows:
           region: AWS_REGION
           repo: '${MY_APP_PREFIX}'
           tag: '${CIRCLE_SHA1}'
+
       - aws-ecs/deploy-service-update:
           cluster-name: 'cb-cluster'
           container-image-name-updates: 'container=${MY_APP_PREFIX},tag=${CIRCLE_SHA1}'
