@@ -22,7 +22,7 @@
 version: '2.1'
 orbs:
   aws-ecr: circleci/aws-ecr@6.15
-  aws-ecs: circleci/aws-ecs@2.0.0
+  aws-ecs: circleci/aws-ecs@2.2.1
 workflows:
   build-and-deploy:
     jobs:
@@ -34,6 +34,7 @@ workflows:
 
       - aws-ecs/deploy-service-update:
           cluster-name: 'cb-cluster'
+          MY_APP_PREFIX = "app_node"
 #          container-image-name-updates: 'container=${MY_APP_PREFIX},tag=${CIRCLE_SHA1}'
           container-image-name-updates: "container=app,image-and-tag=${AWS_ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/app_node:${CIRCLE_SHA1}"
           family: "cb-app"
